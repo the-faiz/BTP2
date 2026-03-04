@@ -1,20 +1,27 @@
 import numpy as np
 import pandas as pd
 
-def generate_user_profile(n_users=50, cell_radius=1000):
+from config_loader import load_config
+
+CONFIG = load_config()
+USER_CFG = CONFIG["user_profile"]
+CHANNEL_CFG = CONFIG["channel"]
+
+
+def generate_user_profile(
+    n_users=USER_CFG["default_n_users"], cell_radius=USER_CFG["default_cell_radius"]
+):
     """
     Generates a synthetic dataset for Multi-Slice Resource Allocation.
     """
     # 1. Initialize Constants
-    P_tx_dbm = 46  # Transmit power of Base Station (dBm)
-    Noise_Floor_dbm = -174 + 10 * np.log10(180e3) # Thermal noise for 180kHz PRB
+    P_tx_dbm = CHANNEL_CFG["p_tx_dbm"]  # Transmit power of Base Station (dBm)
+    Noise_Floor_dbm = CHANNEL_CFG["thermal_noise_density_dbm_hz"] + 10 * np.log10(
+        CHANNEL_CFG["noise_bandwidth_hz"]
+    )  # Thermal noise for 180kHz PRB
     
     # Tier Data [cite: 12, 13, 14, 15]
-    tiers = {
-        'Gold':   {'R_target': 20, 'weight': 3},
-        'Silver': {'R_target': 10, 'weight': 2},
-        'Bronze': {'R_target': 5,  'weight': 1}
-    }
+    tiers = USER_CFG["tiers"]
     tier_names = list(tiers.keys())
 
     # 2. Spatial Distribution (Monte Carlo) [cite: 20, 47]
@@ -35,20 +42,28 @@ def generate_user_profile(n_users=50, cell_radius=1000):
         
         # Mobility (Speed v_i in km/h) 
         # Mix of stationary (0), pedestrian (3-5), and vehicular (30-60)
-        v_i = np.random.choice([0, 5, 40], p=[0.4, 0.4, 0.2]) 
+        v_i = np.random.choice(
+            USER_CFG["mobility"]["speeds_kmh"], p=USER_CFG["mobility"]["probabilities"]
+        )
         
         # 4. Signal Modeling & Interference [cite: 16, 21]
         # Simple Path Loss Model (Cost231 Hata or similar simplified)
         # PL = 128.1 + 37.6 * log10(d_km)
-        dist_km = max(distances[i] / 1000, 0.01) # Avoid log(0)
-        path_loss = 128.1 + 37.6 * np.log10(dist_km)
+        dist_km = max(
+            distances[i] / 1000, CHANNEL_CFG["min_distance_km"]
+        )  # Avoid log(0)
+        path_loss = CHANNEL_CFG["path_loss_offset"] + CHANNEL_CFG["path_loss_slope"] * np.log10(
+            dist_km
+        )
         
         P_rx_dbm = P_tx_dbm - path_loss
         P_rx_linear = 10**(P_rx_dbm / 10)
         
         # Modeling Interference (I) 
         # Increases slightly as user moves toward cell edge
-        interference_dbm = -90 + (10 * (distances[i] / cell_radius)) 
+        interference_dbm = CHANNEL_CFG["interference_base_dbm"] + (
+            CHANNEL_CFG["interference_edge_gain_dbm"] * (distances[i] / cell_radius)
+        )
         I_linear = 10**(interference_dbm / 10)
         N_linear = 10**(Noise_Floor_dbm / 10)
         

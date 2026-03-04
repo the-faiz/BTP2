@@ -4,6 +4,10 @@ import numpy as np
 import pandas as pd
 
 from channel_model import Channel
+from config_loader import load_config
+
+CONFIG = load_config()
+USER_CFG = CONFIG["user_profile"]
 
 
 @dataclass
@@ -18,15 +22,16 @@ class User:
     required_bw_mhz: float
 
     @staticmethod
-    def generate_user_profile(n_users: int = 50, cell_radius: float = 1000.0) -> pd.DataFrame:
+    def generate_user_profile(
+        n_users: int = USER_CFG["default_n_users"],
+        cell_radius: float = USER_CFG["default_cell_radius"],
+    ) -> pd.DataFrame:
         """
         Generate synthetic users and return them as a DataFrame.
         """
-        tiers = {
-            "Gold": {"R_target": 20, "weight": 3},
-            "Silver": {"R_target": 10, "weight": 2},
-            "Bronze": {"R_target": 5, "weight": 1},
-        }
+        tiers = USER_CFG["tiers"]
+        mobility_speeds = USER_CFG["mobility"]["speeds_kmh"]
+        mobility_probs = USER_CFG["mobility"]["probabilities"]
         tier_names = list(tiers.keys())
         channel = Channel(cell_radius=cell_radius)
 
@@ -39,7 +44,7 @@ class User:
             tier = np.random.choice(tier_names)
             target_rate = tiers[tier]["R_target"]
             weight = tiers[tier]["weight"]
-            speed = np.random.choice([0, 5, 40], p=[0.4, 0.4, 0.2])
+            speed = np.random.choice(mobility_speeds, p=mobility_probs)
 
             sinr_linear = channel.compute_sinr_linear(distance_m=distances[i])
             required_bw = target_rate / np.log2(1 + sinr_linear)
@@ -69,4 +74,3 @@ class User:
                 "required_bw_mhz": "Required_BW_MHz",
             }
         )
-

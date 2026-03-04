@@ -2,18 +2,23 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from config_loader import load_config
+
+CONFIG = load_config()
+CHANNEL_CFG = CONFIG["channel"]
+
 
 @dataclass
 class Channel:
-    cell_radius: float = 1000.0
-    p_tx_dbm: float = 46.0
-    path_loss_offset: float = 128.1
-    path_loss_slope: float = 37.6
-    interference_base_dbm: float = -90.0
-    interference_edge_gain_dbm: float = 10.0
-    noise_bandwidth_hz: float = 180e3
-    thermal_noise_density_dbm_hz: float = -174.0
-    min_distance_km: float = 0.01
+    cell_radius: float = CHANNEL_CFG["cell_radius"]
+    p_tx_dbm: float = CHANNEL_CFG["p_tx_dbm"]
+    path_loss_offset: float = CHANNEL_CFG["path_loss_offset"]
+    path_loss_slope: float = CHANNEL_CFG["path_loss_slope"]
+    interference_base_dbm: float = CHANNEL_CFG["interference_base_dbm"]
+    interference_edge_gain_dbm: float = CHANNEL_CFG["interference_edge_gain_dbm"]
+    noise_bandwidth_hz: float = CHANNEL_CFG["noise_bandwidth_hz"]
+    thermal_noise_density_dbm_hz: float = CHANNEL_CFG["thermal_noise_density_dbm_hz"]
+    min_distance_km: float = CHANNEL_CFG["min_distance_km"]
 
     @property
     def noise_floor_dbm(self) -> float:
@@ -39,4 +44,3 @@ class Channel:
         i_linear = self.dbm_to_linear(self.compute_interference_dbm(distance_m=distance_m))
         n_linear = self.dbm_to_linear(self.noise_floor_dbm)
         return p_rx_linear / (i_linear + n_linear)
-

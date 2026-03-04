@@ -1,0 +1,29 @@
+{
+  "main": {
+    "default_n_users": 20
+  },
+  "user_profile": {
+    "default_n_users": 50,
+    "default_cell_radius": 1000.0,
+    "tiers": {
+      "Gold": {"R_target": 20, "weight": 3},
+      "Silver": {"R_target": 10, "weight": 2},
+      "Bronze": {"R_target": 5, "weight": 1}
+    },
+    "mobility": {
+      "speeds_kmh": [0, 5, 40],
+      "probabilities": [0.4, 0.4, 0.2]
+    }
+  },
+  "channel": {
+    "cell_radius": 1000.0,
+    "p_tx_dbm": 46.0,
+    "path_loss_offset": 128.1,
+    "path_loss_slope": 37.6,
+    "interference_base_dbm": -90.0,
+    "interference_edge_gain_dbm": 10.0,
+    "noise_bandwidth_hz": 180000.0,
+    "thermal_noise_density_dbm_hz": -174.0,
+    "min_distance_km": 0.01
+  }
+}
