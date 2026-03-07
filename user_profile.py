@@ -8,14 +8,13 @@ from config_loader import load_config
 
 CONFIG = load_config()
 USER_CFG = CONFIG["user_profile"]
+TIERS_CFG = CONFIG["tiers"]
 
 
 @dataclass
 class User:
     user_id: int
     tier: str
-    weight: int
-    target_rate_mbps: float
     distance_m: float
     speed_kmh: float
     sinr_linear: float
@@ -29,7 +28,7 @@ class User:
         """
         Generate synthetic users and return them as a DataFrame.
         """
-        tiers = USER_CFG["tiers"]
+        tiers = TIERS_CFG
         mobility_speeds = USER_CFG["mobility"]["speeds_kmh"]
         mobility_probs = USER_CFG["mobility"]["probabilities"]
         tier_names = list(tiers.keys())
@@ -42,7 +41,7 @@ class User:
         users = []
         for i in range(n_users):
             tier = np.random.choice(tier_names)
-            target_rate = tiers[tier]["R_target"]
+            target_rate = tiers[tier]["target_rate_mbps"]
             weight = tiers[tier]["weight"]
             speed = np.random.choice(mobility_speeds, p=mobility_probs)
 
@@ -53,8 +52,6 @@ class User:
                 User(
                     user_id=i + 1,
                     tier=tier,
-                    weight=weight,
-                    target_rate_mbps=float(target_rate),
                     distance_m=round(float(distances[i]), 2),
                     speed_kmh=float(speed),
                     sinr_linear=round(float(sinr_linear), 4),
@@ -66,8 +63,6 @@ class User:
             columns={
                 "user_id": "User_ID",
                 "tier": "Tier",
-                "weight": "Weight",
-                "target_rate_mbps": "Target_Rate_Mbps",
                 "distance_m": "Distance_m",
                 "speed_kmh": "Speed_kmh",
                 "sinr_linear": "SINR_linear",

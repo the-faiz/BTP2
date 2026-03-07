@@ -2,14 +2,26 @@
   "main": {
     "default_n_users": 20
   },
+  "tiers": {
+    "Tier-1": {
+      "target_rate_mbps": 20,
+      "weight": 3,
+      "price": 100
+    },
+    "Tier-2": {
+      "target_rate_mbps": 10,
+      "weight": 2,
+      "price": 80
+    },
+    "Tier-3": {
+      "target_rate_mbps": 5,
+      "weight": 1,
+      "price": 50
+    }
+  },
   "user_profile": {
     "default_n_users": 50,
     "default_cell_radius": 1000.0,
-    "tiers": {
-      "Gold": {"R_target": 20, "weight": 3},
-      "Silver": {"R_target": 10, "weight": 2},
-      "Bronze": {"R_target": 5, "weight": 1}
-    },
     "mobility": {
       "speeds_kmh": [0, 5, 40],
       "probabilities": [0.4, 0.4, 0.2]
