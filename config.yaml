@@ -25,5 +25,24 @@
     "noise_bandwidth_hz": 180000.0,
     "thermal_noise_density_dbm_hz": -174.0,
     "min_distance_km": 0.01
+  },
+  "isp": {
+    "slices": {
+      "Slice1": {
+        "capacity_prbs": 100,
+        "cost_per_prb": 5,
+        "efficiency_mhz_per_prb": 10
+      },
+      "Slice2": {
+        "capacity_prbs": 50,
+        "cost_per_prb": 10,
+        "efficiency_mhz_per_prb": 20
+      },
+      "Slice3": {
+        "capacity_prbs": 30,
+        "cost_per_prb": 20,
+        "efficiency_mhz_per_prb": 40
+      }
+    }
   }
 }
