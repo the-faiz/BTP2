@@ -9,16 +9,17 @@ from optimzers.optimzer_result import OptimzerResult
 
 CONFIG = load_config()
 OPT_CFG = CONFIG["optimizer"]
+OPT_COMMON = OPT_CFG["common"]
 
 
 class BaseOptimzer(ABC):
     def __init__(self) -> None:
         self.isp = ISP()
         self.tiers_cfg = CONFIG["tiers"]
-        self.threshold = float(OPT_CFG["satisfaction_threshold"])
-        self.eps = float(OPT_CFG["satisfaction_link_eps"])
-        self.min_prbs_per_admitted_user = float(OPT_CFG["min_prbs_per_admitted_user"])
-        self.min_satisfied = OPT_CFG["minimum_satisfied_per_tier"]
+        self.threshold = float(OPT_COMMON["satisfaction_threshold"])
+        self.eps = float(OPT_COMMON["satisfaction_link_eps"])
+        self.min_prbs_per_admitted_user = float(OPT_COMMON["min_prbs_per_admitted_user"])
+        self.min_satisfied = OPT_COMMON["minimum_satisfied_per_tier"]
         self.slice_names = list(self.isp.slices.keys())
         self.tier_names = list(self.tiers_cfg.keys())
 

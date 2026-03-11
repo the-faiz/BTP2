@@ -7,6 +7,7 @@ from optimzers.optimzer_result import OptimzerResult
 
 CONFIG = load_config()
 OPT_CFG = CONFIG["optimizer"]
+LAG_CFG = OPT_CFG["lagrangian"]
 
 
 class LagrangianOptimizer(BaseOptimzer):
@@ -19,10 +20,10 @@ class LagrangianOptimizer(BaseOptimzer):
 
     def __init__(self) -> None:
         super().__init__()
-        self.max_iters = int(OPT_CFG.get("lagrangian_max_iters", 200))
-        self.initial_step = float(OPT_CFG.get("lagrangian_initial_step", 2.0))
-        self.step_decay = float(OPT_CFG.get("lagrangian_step_decay", 0.985))
-        self.min_step = float(OPT_CFG.get("lagrangian_min_step", 0.01))
+        self.max_iters = int(LAG_CFG.get("max_iters", 200))
+        self.initial_step = float(LAG_CFG.get("initial_step", 2.0))
+        self.step_decay = float(LAG_CFG.get("step_decay", 0.985))
+        self.min_step = float(LAG_CFG.get("min_step", 0.01))
 
     def optimize(self, users_df: pd.DataFrame) -> OptimzerResult:
         prepared = self._prepare_inputs(users_df)

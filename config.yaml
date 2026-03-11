@@ -59,17 +59,22 @@
   },
   "optimizer": {
     "method": "milp",
-    "satisfaction_threshold": 0.8,
-    "satisfaction_link_eps": 0.0001,
-    "min_prbs_per_admitted_user": 1.0,
-    "lagrangian_max_iters": 200,
-    "lagrangian_initial_step": 2.0,
-    "lagrangian_step_decay": 0.985,
-    "lagrangian_min_step": 0.01,
-    "minimum_satisfied_per_tier": {
-      "Tier-1": 1,
-      "Tier-2": 1,
-      "Tier-3": 1
+    "common": {
+      "satisfaction_threshold": 0.8,
+      "satisfaction_link_eps": 0.0001,
+      "min_prbs_per_admitted_user": 1.0,
+      "minimum_satisfied_per_tier": {
+        "Tier-1": 1,
+        "Tier-2": 1,
+        "Tier-3": 1
+      }
+    },
+    "milp": {},
+    "lagrangian": {
+      "max_iters": 200,
+      "initial_step": 2.0,
+      "step_decay": 0.985,
+      "min_step": 0.01
     }
   }
 }
