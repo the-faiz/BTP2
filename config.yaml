@@ -1,6 +1,7 @@
 {
   "main": {
-    "default_n_users": 20
+    "default_n_users": 100,
+    "random_seed": 42
   },
   "tiers": {
     "Tier-1": {
@@ -20,7 +21,6 @@
     }
   },
   "user_profile": {
-    "default_n_users": 50,
     "default_cell_radius": 1000.0,
     "mobility": {
       "speeds_kmh": [0, 5, 40],
@@ -55,6 +55,21 @@
         "cost_per_prb": 20,
         "efficiency_mhz_per_prb": 40
       }
+    }
+  },
+  "optimizer": {
+    "method": "milp",
+    "satisfaction_threshold": 0.8,
+    "satisfaction_link_eps": 0.0001,
+    "min_prbs_per_admitted_user": 1.0,
+    "lagrangian_max_iters": 200,
+    "lagrangian_initial_step": 2.0,
+    "lagrangian_step_decay": 0.985,
+    "lagrangian_min_step": 0.01,
+    "minimum_satisfied_per_tier": {
+      "Tier-1": 1,
+      "Tier-2": 1,
+      "Tier-3": 1
     }
   }
 }

@@ -7,6 +7,7 @@ from channel_model import Channel
 from config_loader import load_config
 
 CONFIG = load_config()
+MAIN_CFG = CONFIG["main"]
 USER_CFG = CONFIG["user_profile"]
 TIERS_CFG = CONFIG["tiers"]
 
@@ -22,7 +23,7 @@ class User:
 
     @staticmethod
     def generate_user_profile(
-        n_users: int = USER_CFG["default_n_users"],
+        n_users: int = MAIN_CFG["default_n_users"],
         cell_radius: float = USER_CFG["default_cell_radius"],
     ) -> pd.DataFrame:
         """
