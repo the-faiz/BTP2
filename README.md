@@ -98,3 +98,9 @@ Expected output:
 2. Add satisfaction/fairness metrics (including Jain's Fairness Index).
 3. Evaluate operating cost vs. satisfaction trade-off (`lambda` sweep).
 4. Add Monte Carlo simulations and service migration experiments.
+
+
+## How to Run
+
+1. python3 main.py --users 100 --optimizer lagrangian
+2. python3 montecarlo.py --users-list 100,110,120,130,140,150,160,170,180,190,200,300,400,500 --runs 10 --optimizer milp --out montecarlo_results_milp_10RunPerSim.csv
