@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 from typing import List
 
 import numpy as np
@@ -149,6 +150,16 @@ if __name__ == "__main__":
     )
 
     summary = summary.round(2)
-    summary.to_csv(args.out, index=False)
+
+    results_dir = Path("results")
+    results_dir.mkdir(exist_ok=True)
+
+    out_path = Path(args.out)
+    if out_path.suffix.lower() == ".csv":
+        out_path = results_dir / out_path.name
+    else:
+        out_path = results_dir / f"{out_path.name}.csv"
+
+    summary.to_csv(out_path, index=False)
     print(summary)
-    print(f"\nSaved results to: {args.out}")
+    print(f"\nSaved results to: {out_path}")
