@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from pathlib import Path
 from typing import List
 
@@ -135,9 +136,9 @@ if __name__ == "__main__":
         help="Seed for Monte Carlo runs (default from config.yaml).",
     )
     parser.add_argument(
-        "--out",
-        default="montecarlo_results.csv",
-        help="Output CSV filename.",
+        "--sim-name",
+        default="",
+        help="Optional simulation name for the results subfolder.",
     )
     args = parser.parse_args()
 
@@ -154,12 +155,14 @@ if __name__ == "__main__":
     results_dir = Path("results")
     results_dir.mkdir(exist_ok=True)
 
-    out_path = Path(args.out)
-    if out_path.suffix.lower() == ".csv":
-        out_path = results_dir / out_path.name
-    else:
-        out_path = results_dir / f"{out_path.name}.csv"
+    sim_name = args.sim_name.strip()
+    if not sim_name:
+        sim_name = f"Sim{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+    sim_dir = results_dir / sim_name
+    sim_dir.mkdir(exist_ok=True)
+
+    out_path = sim_dir / "result.csv"
     summary.to_csv(out_path, index=False)
     print(summary)
     print(f"\nSaved results to: {out_path}")

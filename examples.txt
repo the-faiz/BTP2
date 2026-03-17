@@ -1,0 +1,19 @@
+Examples: Running main.py, montecarlo.py, plot_results.py
+
+main.py
+  Default settings (from config.yaml):
+    python main.py
+  Explicit users and optimizer:
+    python main.py --users 200 --optimizer milp
+
+montecarlo.py
+  Default settings (from config.yaml):
+    python montecarlo.py
+  Multiple user counts, 10 runs, explicit optimizer and sim name:
+    python montecarlo.py --users-list 100,150,200 --runs 10 --optimizer milp --seed 123 --sim-name SimTest
+
+plot_results.py
+  Plot objective_mean vs n_users for a given simulation:
+    python plot_results.py --sim-name SimTest --x n_users --y objective_mean
+  Save with a custom filename:
+    python plot_results.py --sim-name SimTest --x n_users --y objective_mean --filename objective_vs_users.png
