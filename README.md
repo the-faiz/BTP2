@@ -1,7 +1,7 @@
 # BTP2: Multi-Slice Resource Allocation and User Satisfaction Optimization
 
 This project models resource allocation in a sliced ISP network with heterogeneous users (Tier-1/Tier-2/Tier-3).  
-The objective is to maximize weighted user satisfaction plus ISP profit.
+The objective is to maximize penalized weighted user satisfaction plus ISP profit.
 
 ## Problem Statement
 
@@ -81,7 +81,7 @@ python3 main.py
 
 Expected output:
 - optimizer status
-- objective breakdown (weighted satisfaction, revenue, cost, profit)
+- objective breakdown (weighted satisfaction, penalized weighted satisfaction, revenue, cost, profit)
 - slice utilization table
 - user allocation sample with assigned slice, PRBs, satisfaction, and satisfied flag
 

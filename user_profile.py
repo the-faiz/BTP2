@@ -33,6 +33,13 @@ class User:
         mobility_speeds = USER_CFG["mobility"]["speeds_kmh"]
         mobility_probs = USER_CFG["mobility"]["probabilities"]
         tier_names = list(tiers.keys())
+        tier_probs_cfg = USER_CFG.get("tier_probabilities", {})
+        tier_probs = [float(tier_probs_cfg.get(name, 0.0)) for name in tier_names]
+        total_prob = float(sum(tier_probs))
+        if total_prob <= 0.0:
+            tier_probs = None
+        else:
+            tier_probs = [p / total_prob for p in tier_probs]
         channel = Channel(cell_radius=cell_radius)
 
         theta = 2 * np.pi * np.random.rand(n_users)
@@ -41,7 +48,7 @@ class User:
 
         users = []
         for i in range(n_users):
-            tier = np.random.choice(tier_names)
+            tier = np.random.choice(tier_names, p=tier_probs)
             target_rate = tiers[tier]["target_rate_mbps"]
             weight = tiers[tier]["weight"]
             speed = np.random.choice(mobility_speeds, p=mobility_probs)

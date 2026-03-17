@@ -20,6 +20,9 @@ class BaseOptimzer(ABC):
         self.eps = float(OPT_COMMON["satisfaction_link_eps"])
         self.min_prbs_per_admitted_user = float(OPT_COMMON["min_prbs_per_admitted_user"])
         self.min_satisfied = OPT_COMMON["minimum_satisfied_per_tier"]
+        self.min_satisfied_penalty = float(
+            OPT_COMMON.get("minimum_satisfied_penalty", 1e6)
+        )
         self.slice_names = list(self.isp.slices.keys())
         self.tier_names = list(self.tiers_cfg.keys())
 
@@ -69,6 +72,7 @@ class BaseOptimzer(ABC):
         status: int,
         success: bool,
         message: str,
+        min_satisfied_violation: float = 0.0,
     ) -> OptimzerResult:
         users = prepared["users"].copy()
         targets = prepared["targets"]
@@ -92,7 +96,10 @@ class BaseOptimzer(ABC):
         cost = float(np.sum(p_sol * costs.reshape(1, -1)))
         profit = revenue - cost
         weighted_satisfaction = float(np.sum(weights * satisfaction))
-        objective_value = weighted_satisfaction + profit
+        weighted_satisfaction_penalized = weighted_satisfaction - (
+            self.min_satisfied_penalty * min_satisfied_violation
+        )
+        objective_value = weighted_satisfaction_penalized + profit
 
         users["Assigned_Slice"] = assigned_slices
         users["Admitted"] = admitted
@@ -124,11 +131,13 @@ class BaseOptimzer(ABC):
             message=message,
             objective_value=objective_value,
             weighted_satisfaction=weighted_satisfaction,
+            weighted_satisfaction_penalized=weighted_satisfaction_penalized,
             revenue=revenue,
             cost=cost,
             profit=profit,
             user_allocations=users,
             slice_usage=pd.DataFrame(slice_usage),
+            min_satisfied_violation=min_satisfied_violation,
         )
 
     @abstractmethod

@@ -29,7 +29,9 @@ class MilpOptimizer(BaseOptimzer):
         sat_size = n_users
         rate_start = sat_start + sat_size
         rate_size = n_users
-        n_vars = rate_start + rate_size
+        s_start = rate_start + rate_size
+        s_size = len(self.tier_names)
+        n_vars = s_start + s_size
 
         def x_idx(i: int, k: int) -> int:
             return x_start + i * n_slices + k
@@ -46,12 +48,17 @@ class MilpOptimizer(BaseOptimzer):
         def rate_idx(i: int) -> int:
             return rate_start + i
 
+        def s_idx(t: int) -> int:
+            return s_start + t
+
         c = np.zeros(n_vars, dtype=float)
         for i in range(n_users):
             for k in range(n_slices):
                 c[x_idx(i, k)] = -prices[i]
                 c[p_idx(i, k)] = costs[k]
             c[sat_idx(i)] = -weights[i]
+        for t in range(s_size):
+            c[s_idx(t)] = self.min_satisfied_penalty
 
         lower_bounds = np.zeros(n_vars, dtype=float)
         upper_bounds = np.full(n_vars, np.inf, dtype=float)
@@ -63,6 +70,8 @@ class MilpOptimizer(BaseOptimzer):
             upper_bounds[y_idx(i)] = 1.0
             upper_bounds[sat_idx(i)] = 1.0
             upper_bounds[rate_idx(i)] = float(np.dot(capacities, efficiencies))
+        for t in range(s_size):
+            upper_bounds[s_idx(t)] = np.inf
 
         integrality = np.zeros(n_vars, dtype=int)
         integrality[x_start : x_start + x_size] = 1
@@ -123,17 +132,22 @@ class MilpOptimizer(BaseOptimzer):
             row[y_idx(i)] = -upper_coeff
             constraints.append(LinearConstraint(row, -np.inf, self.threshold - self.eps))
 
-        for tier_name in self.tier_names:
+        for t, tier_name in enumerate(self.tier_names):
             tier_indices = users.index[users["Tier"] == tier_name].tolist()
-            min_required = int(self.min_satisfied.get(tier_name, 0))
-            if min_required < 0:
+            min_required_raw = float(self.min_satisfied.get(tier_name, 0))
+            if min_required_raw < 0:
                 raise ValueError(
                     f"optimizer.minimum_satisfied_per_tier[{tier_name}] must be >= 0."
                 )
+            if 0.0 < min_required_raw < 1.0:
+                min_required = int(np.ceil(min_required_raw * len(tier_indices)))
+            else:
+                min_required = int(min_required_raw)
             min_required = min(min_required, len(tier_indices))
             row = np.zeros(n_vars, dtype=float)
             for i in tier_indices:
                 row[y_idx(i)] = 1.0
+            row[s_idx(t)] = 1.0
             constraints.append(LinearConstraint(row, float(min_required), np.inf))
 
         result = milp(
@@ -152,6 +166,7 @@ class MilpOptimizer(BaseOptimzer):
         p_sol = np.array([sol[p_idx(i, k)] for i in range(n_users) for k in range(n_slices)]).reshape(
             n_users, n_slices
         )
+        s_sol = np.array([sol[s_idx(t)] for t in range(s_size)]) if s_size else np.array([])
 
         return self._build_result(
             prepared,
@@ -160,4 +175,5 @@ class MilpOptimizer(BaseOptimzer):
             status=int(result.status),
             success=bool(result.success),
             message=str(result.message),
+            min_satisfied_violation=float(np.sum(s_sol)) if s_sol.size else 0.0,
         )

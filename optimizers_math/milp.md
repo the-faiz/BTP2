@@ -31,7 +31,7 @@ This solver uses a Mixed-Integer Linear Program (MILP) to optimize user admissio
 - Satisfaction upper bound: `s_i ≤ r_i / R_i`, `s_i ≤ 1`
 
 **Objective**
-Maximize weighted satisfaction plus profit:
+Maximize penalized weighted satisfaction plus profit:
 ```
 max  Σ_i (w_i * s_i) + Σ_i Σ_k (x_{i,k} * P_i) - Σ_i Σ_k (c_k * p_{i,k})
 ```

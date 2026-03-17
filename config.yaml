@@ -22,6 +22,11 @@
   },
   "user_profile": {
     "default_cell_radius": 1000.0,
+    "tier_probabilities": {
+      "Tier-1": 0.2,
+      "Tier-2": 0.3,
+      "Tier-3": 0.5
+    },
     "mobility": {
       "speeds_kmh": [0, 5, 40],
       "probabilities": [0.4, 0.4, 0.2]
@@ -63,10 +68,11 @@
       "satisfaction_threshold": 0.8,
       "satisfaction_link_eps": 0.0001,
       "min_prbs_per_admitted_user": 1.0,
+      "minimum_satisfied_penalty": 100.0,
       "minimum_satisfied_per_tier": {
-        "Tier-1": 1,
-        "Tier-2": 1,
-        "Tier-3": 1
+        "Tier-1": 0.8,
+        "Tier-2": 0.5,
+        "Tier-3": 0.3
       }
     },
     "milp": {},

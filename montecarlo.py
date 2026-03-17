@@ -56,9 +56,11 @@ def run_montecarlo(
                 {
                     "objective": result.objective_value,
                     "weighted_satisfaction": result.weighted_satisfaction,
+                    "weighted_satisfaction_penalized": result.weighted_satisfaction_penalized,
                     "revenue": result.revenue,
                     "cost": result.cost,
                     "profit": result.profit,
+                    "min_satisfied_violation": result.min_satisfied_violation,
                     "util_slice1": float(usage.loc["Slice1", "Utilization"]) * 100.0,
                     "util_slice2": float(usage.loc["Slice2", "Utilization"]) * 100.0,
                     "util_slice3": float(usage.loc["Slice3", "Utilization"]) * 100.0,
@@ -78,6 +80,18 @@ def run_montecarlo(
                 "weighted_satisfaction_var": df["weighted_satisfaction"].var(ddof=1),
                 "weighted_satisfaction_min": df["weighted_satisfaction"].min(),
                 "weighted_satisfaction_max": df["weighted_satisfaction"].max(),
+                "weighted_satisfaction_penalized_mean": df[
+                    "weighted_satisfaction_penalized"
+                ].mean(),
+                "weighted_satisfaction_penalized_var": df[
+                    "weighted_satisfaction_penalized"
+                ].var(ddof=1),
+                "weighted_satisfaction_penalized_min": df[
+                    "weighted_satisfaction_penalized"
+                ].min(),
+                "weighted_satisfaction_penalized_max": df[
+                    "weighted_satisfaction_penalized"
+                ].max(),
                 "revenue_mean": df["revenue"].mean(),
                 "revenue_var": df["revenue"].var(ddof=1),
                 "revenue_min": df["revenue"].min(),
@@ -90,6 +104,10 @@ def run_montecarlo(
                 "profit_var": df["profit"].var(ddof=1),
                 "profit_min": df["profit"].min(),
                 "profit_max": df["profit"].max(),
+                "min_satisfied_violation_mean": df["min_satisfied_violation"].mean(),
+                "min_satisfied_violation_var": df["min_satisfied_violation"].var(ddof=1),
+                "min_satisfied_violation_min": df["min_satisfied_violation"].min(),
+                "min_satisfied_violation_max": df["min_satisfied_violation"].max(),
                 "util_slice1_mean": df["util_slice1"].mean(),
                 "util_slice1_var": df["util_slice1"].var(ddof=1),
                 "util_slice1_min": df["util_slice1"].min(),
