@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 
 from config_loader import load_config
-from optimzers import LagrangianOptimizer, MilpOptimizer
+from optimzers import LagrangianOptimizer, MilpOptimizer, PsoOptimizer
 from user_profile import User
 
 CONFIG = load_config()
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--optimizer",
-        choices=["milp", "lagrangian"],
+        choices=["milp", "lagrangian", "pso"],
         default=CONFIG["optimizer"].get("method", "milp").strip().lower(),
         help="Optimizer method to use (default from config.yaml).",
     )
@@ -31,9 +31,11 @@ if __name__ == "__main__":
         optimizer = MilpOptimizer()
     elif args.optimizer == "lagrangian":
         optimizer = LagrangianOptimizer()
+    elif args.optimizer == "pso":
+        optimizer = PsoOptimizer()
     else:
         raise ValueError(
-            f"Unknown optimizer method: {args.optimizer}. Use 'milp' or 'lagrangian'."
+            f"Unknown optimizer method: {args.optimizer}. Use 'milp', 'lagrangian', or 'pso'."
         )
 
     result = optimizer.optimize(df_users)

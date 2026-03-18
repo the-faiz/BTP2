@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from config_loader import load_config
-from optimzers import LagrangianOptimizer, MilpOptimizer
+from optimzers import LagrangianOptimizer, MilpOptimizer, PsoOptimizer
 from user_profile import User
 
 CONFIG = load_config()
@@ -32,7 +32,11 @@ def _build_optimizer(method: str):
         return MilpOptimizer()
     if method == "lagrangian":
         return LagrangianOptimizer()
-    raise ValueError(f"Unknown optimizer method: {method}. Use 'milp' or 'lagrangian'.")
+    if method == "pso":
+        return PsoOptimizer()
+    raise ValueError(
+        f"Unknown optimizer method: {method}. Use 'milp', 'lagrangian', or 'pso'."
+    )
 
 
 def run_montecarlo(
@@ -143,7 +147,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--optimizer",
-        choices=["milp", "lagrangian"],
+        choices=["milp", "lagrangian", "pso"],
         default=CONFIG["optimizer"].get("method", "milp").strip().lower(),
         help="Optimizer method to use (default from config.yaml).",
     )

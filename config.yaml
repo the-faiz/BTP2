@@ -76,6 +76,14 @@
       }
     },
     "milp": {},
+    "pso": {
+      "n_particles": 30,
+      "max_iters": 200,
+      "w": 0.7,
+      "c1": 1.5,
+      "c2": 1.5,
+      "vmax": 10.0
+    },
     "lagrangian": {
       "max_iters": 200,
       "initial_step": 2.0,
